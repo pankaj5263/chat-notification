@@ -1,0 +1,14 @@
+{
+  "name": "@packages/config",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/env.js",
+    "./swagger": "./src/swagger.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "swagger-jsdoc": "^6.3.0",
+    "zod": "^4.4.3"
+  }
+}

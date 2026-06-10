@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket Playground</title>
+
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+</head>
+
+<body>
+
+  <h1>Socket Playground</h1>
+
+  <button id="connect">
+    Connect
+  </button>
+
+  <button id="disconnect">
+    Disconnect
+  </button>
+
+  <hr>
+
+  <input
+    id="roomId"
+    placeholder="room id"
+  />
+
+  <button id="joinRoom">
+    Join Room
+  </button>
+
+  <button id="leaveRoom">
+    Leave Room
+  </button>
+
+  <hr>
+
+  <input
+    id="message"
+    placeholder="message"
+  />
+
+  <button id="sendMessage">
+    Send
+  </button>
+
+  <hr>
+
+  <h3>Messages</h3>
+
+  <ul id="messages"></ul>
+
+  <hr>
+
+  <h3>Notifications</h3>
+
+  <ul id="notifications"></ul>
+
+  <hr>
+
+  <h3>Typing</h3>
+
+  <div id="typing"></div>
+
+  <hr>
+
+  <h3>Logs</h3>
+
+  <pre id="logs"></pre>
+
+
+  <script>
+let socket;
+
+const logs =
+  document.getElementById("logs");
+
+const messages =
+  document.getElementById("messages");
+
+const notifications =
+  document.getElementById("notifications");
+
+const typing =
+  document.getElementById("typing");
+
+const log = (data) => {
+  logs.textContent +=
+    JSON.stringify(data, null, 2)
+    + "\n\n";
+};
+
+document
+.getElementById("connect")
+.addEventListener("click", () => {
+
+  socket = io("http://localhost:8081");
+
+  socket.on("connect", () => {
+    log({
+      event: "connect",
+      id: socket.id
+    });
+  });
+
+  socket.on(
+    "message:received",
+    (payload) => {
+
+      const li =
+        document.createElement("li");
+
+      li.textContent =
+        JSON.stringify(payload);
+
+      messages.appendChild(li);
+
+      log(payload);
+    }
+  );
+
+  socket.on(
+    "notification:received",
+    (payload) => {
+
+      const li =
+        document.createElement("li");
+
+      li.textContent =
+        JSON.stringify(payload);
+
+      notifications.appendChild(li);
+
+      log(payload);
+    }
+  );
+
+  socket.on(
+    "typing:start",
+    (payload) => {
+
+      typing.innerHTML =
+        `${payload.userId} typing`;
+    }
+  );
+
+  socket.on(
+    "typing:stop",
+    () => {
+
+      typing.innerHTML = "";
+    }
+  );
+
+});
+</script>
+
+<script>
+document
+.getElementById("joinRoom")
+.addEventListener("click", () => {
+
+  const roomId =
+    document.getElementById("roomId")
+      .value;
+
+  socket.emit(
+    "room:join",
+    {
+      roomId
+    }
+  );
+});
+</script>
+
+<script>
+document
+.getElementById("leaveRoom")
+.addEventListener("click", () => {
+
+  const roomId =
+    document.getElementById("roomId")
+      .value;
+
+  socket.emit(
+    "room:leave",
+    {
+      roomId
+    }
+  );
+});
+</script>
+
+<script>
+document
+.getElementById("sendMessage")
+.addEventListener("click", () => {
+
+  const roomId =
+    document.getElementById("roomId")
+      .value;
+
+  const message =
+    document.getElementById("message")
+      .value;
+
+  socket.emit(
+    "message:send",
+    {
+      roomId,
+      message
+    }
+  );
+});
+</script>
+
+<script>
+document
+.getElementById("disconnect")
+.addEventListener("click", () => {
+
+  socket.disconnect();
+});
+</script>
+
+</body>
+</html>

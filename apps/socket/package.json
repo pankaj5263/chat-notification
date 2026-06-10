@@ -1,0 +1,12 @@
+{
+  "name": "@apps/socket",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
+  }
+}

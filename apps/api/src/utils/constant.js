@@ -1,0 +1,6 @@
+export const STATUS_CODES= {
+    STATUS_201: 201,
+    STATUS_401:401,
+    STATUS_404:404,
+    STATUS_500:500
+}
